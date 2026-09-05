@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "target": "ES2022" /* Use modern JavaScript features */,
+    "module": "NodeNext" /* Required for modern Node modules */,
+    "moduleResolution": "NodeNext",
+    "rootDir": "./src" /* Where your source code lives */,
+    "outDir": "./dist" /* Where compiled code will go */,
+    "esModuleInterop": true /* Emits additional JavaScript for compatibility */,
+    "forceConsistentCasingInFileNames": true /* Ensure cross-platform file naming safety */,
+    "strict": true /* Enable all strict type-checking options */,
+    "skipLibCheck": true /* Skip type checking of declaration files */
+  },
+  "include": ["src/**/*"]
+}

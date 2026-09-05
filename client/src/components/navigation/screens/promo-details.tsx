@@ -9,7 +9,6 @@ import { useGetPromoQuery } from '@/lib/store/promos';
 import { useGetVaultCardQuery } from '@/lib/store/vault_card';
 import { priceFormate } from '@/lib/utils/number';
 import { accountFormate } from '@/lib/utils/string';
-import { useAuth } from '@/providers/auth-session';
 import { RouteProp } from '@react-navigation/native';
 import { useCallback, useState } from 'react';
 import { View } from 'react-native';
@@ -36,7 +35,6 @@ export function PromoDetailsScreen({
 }: {
   route: RouteProp<RootParams, 'PromoDetails'>;
 }) {
-  const { currentUser } = useAuth();
   const [step, setStep] = useState(0);
 
   const [data, setData] = useState({
@@ -49,19 +47,15 @@ export function PromoDetailsScreen({
     setStep(0);
   });
 
-  const { data: vaultCard, isLoading: isCardLoading } = useGetVaultCardQuery(
-    currentUser?.id ?? '',
-    {
-      skip: !currentUser,
-    },
-  );
+  const { data: vaultCard, isLoading: isCardLoading } =
+    useGetVaultCardQuery(undefined);
 
   const { data: promo, isLoading: isPromoLoading } = useGetPromoQuery(
     params?.id,
   );
   const { data: bankAccounts, isLoading: isBankLoading } =
-    useGetBankAccountsQuery(currentUser?.id ?? '', {
-      skip: !promo || !!promo?.used || !currentUser,
+    useGetBankAccountsQuery(undefined, {
+      skip: !promo || !!promo?.used,
     });
 
   const onStep = useCallback((v: number) => {

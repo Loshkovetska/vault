@@ -6,7 +6,6 @@ import {
   useGetBankQuery,
   useUpdateBankMutation,
 } from '@/lib/store/bank_accounts';
-import { useAuth } from '@/providers/auth-session';
 import { toast } from '@/lib/helpers/toast';
 import { useNavigate } from '@/lib/hooks/use-navigate';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -45,11 +44,11 @@ export function BankEditor({
 }: {
   route: RouteProp<RootParams, 'AddBank'>;
 }) {
-  const { currentUser } = useAuth();
   const bankId = params?.id;
   const { data: bankAccount } = useGetBankQuery(bankId ?? '', {
     skip: !bankId,
   });
+
   const [connectBank, { isLoading: isConnecting }] = useConnectBankMutation();
   const [updateBank, { isLoading: isUpdating }] = useUpdateBankMutation();
 
@@ -69,13 +68,11 @@ export function BankEditor({
 
   const onSubmit = useCallback(
     async (values: z.infer<typeof bankAccountSchema>) => {
-      if (!currentUser) return;
       try {
         const payload: AddBankRequest = {
           name: values.name,
           account: values.account,
           balance: Number(values.balance),
-          user_id: currentUser?.id,
         };
         if (bankId) {
           await updateBank({ id: bankId, ...payload });
@@ -91,7 +88,7 @@ export function BankEditor({
         toast.error(`Failed to ${bankId ? 'update' : 'connect'} account!`);
       }
     },
-    [currentUser, bankId, updateBank, connectBank, goBack],
+    [bankId, updateBank, connectBank, goBack],
   );
 
   useEffect(() => {

@@ -30,9 +30,9 @@ export function NotificationSettingsScreen() {
 
   const onToggle = useCallback(
     (k: ToggledPreference) => (v: boolean) => {
-      mutate({ body: { [k]: v }, id: currentUser?.id ?? '' });
+      mutate({ body: { [k]: v } });
     },
-    [currentUser, mutate],
+    [mutate],
   );
 
   return (

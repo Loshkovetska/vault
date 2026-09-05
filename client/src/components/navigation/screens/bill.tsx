@@ -15,7 +15,6 @@ import {
   TransactionType,
   TransactionStatus,
 } from '@/lib/types/transaction';
-import { useAuth } from '@/providers/auth-session';
 import { useCallback, useState } from 'react';
 import { KeyboardAvoidingView, Platform } from 'react-native';
 
@@ -35,15 +34,12 @@ const initialState: {
 
 export function Bill() {
   const { goToActivity } = useNavigate();
-  const { currentUser } = useAuth();
 
   const [step, setStep] = useState(0);
   const [data, setData] = useState(initialState);
 
   const [postTransaction] = usePostTransactionMutation();
-  const { data: vaultCard } = useGetVaultCardQuery(currentUser?.id ?? '', {
-    skip: !currentUser,
-  });
+  const { data: vaultCard } = useGetVaultCardQuery(undefined);
 
   const onStep = useCallback((num: number) => setStep(prev => prev + num), []);
   const onChange = useCallback(
@@ -66,9 +62,8 @@ export function Bill() {
         method_id: vaultCard?.id,
       } as BillT,
       amount: Number(data.amount),
-      user_id: currentUser?.id ?? '',
     } as Omit<Transaction, 'id'>).then(() => goToActivity());
-  }, [data, currentUser, vaultCard, postTransaction, goToActivity]);
+  }, [data, vaultCard, postTransaction, goToActivity]);
 
   const stepContent = {
     0: {

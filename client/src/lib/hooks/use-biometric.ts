@@ -1,4 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as Keychain from 'react-native-keychain';
+
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { AppState, AppStateStatus } from 'react-native';
 import ReactNativeBiometrics from 'react-native-biometrics';
@@ -27,7 +29,9 @@ export function useBiometric(onFail: () => void) {
     const { available, biometryType } = await rnBiometrics.isSensorAvailable();
     if (available) {
       if (biometryType === 'FaceID') {
-        const session = await AsyncStorage.getItem(STORAGE_KEYS.SESSION_ID);
+        const session = await Keychain.getGenericPassword({
+          service: STORAGE_KEYS.SESSION_ID,
+        });
         if (session) {
           const { success } = await rnBiometrics.simplePrompt({
             promptMessage: 'Authenticate to continue',

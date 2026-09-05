@@ -14,7 +14,6 @@ import { useDeleteCardMutation, useGetCardsQuery } from '@/lib/store/cards';
 import { themeConfig } from '@/lib/theme';
 import { screenWidth } from '@/lib/utils/device';
 import { encryptCardNumber } from '@/lib/utils/string';
-import { useAuth } from '@/providers/auth-session';
 import { AddSquare } from '@solar-icons/react-native/Linear';
 import { useCallback, useState } from 'react';
 import { FlatList, View } from 'react-native';
@@ -55,29 +54,26 @@ export function CardsBanksScreen() {
   const [cSettingsOpen, setCSettingsOpen] = useState<string | null>(null);
   const [bSettingsOpen, setBSettingsOpen] = useState<string | null>(null);
 
-  const { currentUser } = useAuth();
+  const { data: bank_accounts } = useGetBankAccountsQuery(undefined);
 
-  const { data: bank_accounts } = useGetBankAccountsQuery(
-    currentUser?.id ?? '',
-    {
-      skip: !currentUser,
-    },
-  );
-
-  const { data: cards } = useGetCardsQuery(currentUser?.id ?? '', {
-    skip: !currentUser,
-  });
+  const { data: cards } = useGetCardsQuery(undefined);
 
   const onDelete = useCallback(
     (type: 'card' | 'account', id: string) => {
       if (type === 'account') {
         deleteAccount(id)
-          .then(() => toast.success('Account deleted!'))
+          .then(() => {
+            toast.success('Account deleted!');
+            setBSettingsOpen(null);
+          })
           .catch(() => toast.error('Failed to delete account!'));
         return;
       }
       deleteCard(id)
-        .then(() => toast.success('Card deleted!'))
+        .then(() => {
+          toast.success('Card deleted!');
+          setCSettingsOpen(null);
+        })
         .catch(() => toast.error('Failed to delete card!'));
     },
     [deleteAccount, deleteCard],
@@ -141,7 +137,7 @@ export function CardsBanksScreen() {
             <View key={item.id} style={{ width: screenWidth }}>
               <BankPreview
                 bankAccount={item}
-                onPress={() => setCSettingsOpen(item.id)}
+                onPress={() => setBSettingsOpen(item.id)}
               />
             </View>
           )}
@@ -162,14 +158,20 @@ export function CardsBanksScreen() {
       <ActionsDialog
         open={!!cSettingsOpen}
         onOpenChange={() => setCSettingsOpen(null)}
-        onEdit={() => goToCardEditor(cSettingsOpen ?? '')}
+        onEdit={() => {
+          goToCardEditor(cSettingsOpen ?? '');
+          setCSettingsOpen(null);
+        }}
         onDelete={() => onDelete('card', cSettingsOpen ?? '')}
       />
 
       <ActionsDialog
         open={!!bSettingsOpen}
         onOpenChange={() => setBSettingsOpen(null)}
-        onEdit={() => goToAccountEditor(bSettingsOpen ?? '')}
+        onEdit={() => {
+          goToAccountEditor(bSettingsOpen ?? '');
+          setBSettingsOpen(null);
+        }}
         onDelete={() => onDelete('account', bSettingsOpen ?? '')}
       />
     </>

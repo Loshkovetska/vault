@@ -11,11 +11,7 @@ import { useEffect, useState } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useBiometric } from '@/lib/hooks/use-biometric';
 import { STORAGE_KEYS } from '@/lib/constants/keys';
-import { useSubscribe } from '@/lib/hooks/use-subscribe';
-import { logger } from '@/lib/helpers/logger';
-import { authService } from '@/lib/firebase/auth';
-import { dbService } from '@/lib/firebase/db';
-import { Notification } from '@/lib/types/notification';
+import * as Keychain from 'react-native-keychain';
 
 const styles = StyleSheet.create({
   wrapper: {
@@ -43,61 +39,12 @@ export default function NavigationProvider({
 
   useBiometric(() => setSigned(false));
 
-  useSubscribe({
-    collection: 'sessions',
-    onSuccess: async data => {
-      try {
-        const docs = data.docChanges();
-        if (docs.length) {
-          const session = await AsyncStorage.getItem(STORAGE_KEYS.SESSION_ID);
-          const removed = docs.filter(d => d.type === 'removed');
-
-          if (removed.length && session) {
-            const theSame = removed.some(d => d.doc.id === session);
-            if (theSame) {
-              await Promise.all([
-                authService.signOut(),
-                AsyncStorage.removeItem(STORAGE_KEYS.SESSION_ID),
-              ]);
-              setSigned(false);
-            }
-          }
-
-          const added = docs.filter(d => d.type === 'added');
-          if (added.length && session) {
-            const user_id = added
-              .find(ses => ses.doc.id === session)
-              ?.doc?.data()?.user_id;
-
-            const activeSessions = added.find(
-              ses =>
-                ses.doc.id !== session && ses.doc.data()?.user_id === user_id,
-            );
-            if (activeSessions) {
-              const payload: Omit<Notification, 'id'> = {
-                user_id,
-                title: 'New Sign In was detected',
-                text: "Confirm if it's you",
-                type: 'security',
-                created_at: new Date().toISOString(),
-                metadata: {
-                  session_id: activeSessions.doc.id,
-                },
-              };
-              await dbService.post('notifications', payload);
-            }
-          }
-        }
-      } catch (e) {
-        logger('[ERROR]: Session Error', e);
-      }
-    },
-  });
-
   useEffect(() => {
     const init = async () => {
       const onboarded = await AsyncStorage.getItem(STORAGE_KEYS.ONBOARDED_ID);
-      const session = await AsyncStorage.getItem(STORAGE_KEYS.SESSION_ID);
+      const session = await Keychain.getGenericPassword({
+        service: STORAGE_KEYS.SESSION_ID,
+      });
       if (session) {
         setSigned(true);
       }

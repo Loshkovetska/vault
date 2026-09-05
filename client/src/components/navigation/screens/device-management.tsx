@@ -7,7 +7,6 @@ import {
   useGetSessionsQuery,
 } from '@/lib/store/sessions';
 import { activityFormate } from '@/lib/utils/date';
-import { useAuth } from '@/providers/auth-session';
 import { useEffect, useState } from 'react';
 import { TouchableOpacity, View } from 'react-native';
 import DeviceInfo from 'react-native-device-info';
@@ -33,10 +32,7 @@ const styles = StyleSheet.create(theme => ({
 }));
 
 export function DeviceManagementScreen() {
-  const { currentUser } = useAuth();
-  const { data: devices = [] } = useGetSessionsQuery(currentUser?.id ?? '', {
-    skip: !currentUser,
-  });
+  const { data: devices = [] } = useGetSessionsQuery(undefined);
   const [mutate] = useDeleteSessionMutation();
   const [selected, setSelected] = useState<string | null>(null);
   const [ip, setIp] = useState<string | null>(null);

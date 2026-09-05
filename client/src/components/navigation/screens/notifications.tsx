@@ -7,7 +7,6 @@ import { useNavigate } from '@/lib/hooks/use-navigate';
 import { useGetNotificationsQuery } from '@/lib/store/notifications';
 import { Notification, NotificationType } from '@/lib/types/notification';
 import { dateFormate } from '@/lib/utils/date';
-import { useAuth } from '@/providers/auth-session';
 import { LiquidGlassView } from '@callstack/liquid-glass';
 import { Icon } from '@solar-icons/react-native/lib/types';
 import {
@@ -62,14 +61,8 @@ const icons: Record<NotificationType, Icon> = {
 };
 
 export function NotificationsScreen() {
-  const { currentUser } = useAuth();
   const { goToPromo, goToActivityDetails } = useNavigate();
-  const { data: notifications } = useGetNotificationsQuery(
-    currentUser?.id ?? '',
-    {
-      skip: !currentUser,
-    },
-  );
+  const { data: notifications } = useGetNotificationsQuery(undefined);
 
   const onPress = useCallback(
     (type: NotificationType, id?: string) => {

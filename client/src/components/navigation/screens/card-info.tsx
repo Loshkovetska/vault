@@ -12,7 +12,6 @@ import {
 import { expireFormate } from '@/lib/utils/date';
 import { priceFormate } from '@/lib/utils/number';
 import { prettifyCardNumber } from '@/lib/utils/string';
-import { useAuth } from '@/providers/auth-session';
 import { LiquidGlassView } from '@callstack/liquid-glass';
 import {
   Card,
@@ -58,11 +57,8 @@ const styles = StyleSheet.create(theme => ({
 }));
 
 export function CardInfoScreen() {
-  const { currentUser } = useAuth();
   const { goToScreen, goBack } = useNavigate();
-  const { data: vaultCard } = useGetVaultCardQuery(currentUser?.id ?? '', {
-    skip: !currentUser,
-  });
+  const { data: vaultCard } = useGetVaultCardQuery(undefined);
 
   const [toggleStatus] = useToggleCardStatusMutation();
 
@@ -72,7 +68,7 @@ export function CardInfoScreen() {
         case 'active':
         case 'pause':
         case 'block':
-          return toggleStatus([vaultCard?.id ?? '', id])
+          return toggleStatus(id)
             .then(() => toast.success('Card status updated!'))
             .catch(() => toast.error('Something went wrong!'));
         case 'pin':
@@ -82,7 +78,7 @@ export function CardInfoScreen() {
           return;
       }
     },
-    [vaultCard, goBack, toggleStatus, goToScreen],
+    [goBack, toggleStatus, goToScreen],
   );
 
   const onCopy = useCallback(() => {

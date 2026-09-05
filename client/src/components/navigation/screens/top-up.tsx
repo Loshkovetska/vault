@@ -38,20 +38,11 @@ export function TopUpScreen() {
   const [postTransaction] = usePostTransactionMutation();
   const [updateBalance] = useUpdateBalanceMutation();
 
-  const { data: vaultCard } = useGetVaultCardQuery(currentUser?.id ?? '', {
-    skip: !currentUser,
-  });
+  const { data: vaultCard } = useGetVaultCardQuery(undefined);
 
-  const { data: bankAccounts } = useGetBankAccountsQuery(
-    currentUser?.id ?? '',
-    {
-      skip: !currentUser,
-    },
-  );
+  const { data: bankAccounts } = useGetBankAccountsQuery(undefined);
 
-  const { data: cards } = useGetCardsQuery(currentUser?.id ?? '', {
-    skip: !currentUser,
-  });
+  const { data: cards } = useGetCardsQuery(undefined);
   const [step, setStep] = useState(0);
   const [data, setData] = useState(initialState);
 
@@ -81,7 +72,6 @@ export function TopUpScreen() {
           methods[data.payment_method as 'bank_transfer']?.title
         }`,
         amount: Number(data.amount),
-        user_id: currentUser?.id ?? '',
         metadata: {
           method_id: data.method_id,
           payment_method: data.payment_method as 'bank_transfer',
@@ -89,14 +79,7 @@ export function TopUpScreen() {
         } as TopUp,
       } as Omit<Transaction, 'id'>).then(() => goToActivity());
     });
-  }, [
-    data,
-    currentUser,
-    vaultCard,
-    postTransaction,
-    updateBalance,
-    goToActivity,
-  ]);
+  }, [data, vaultCard, postTransaction, updateBalance, goToActivity]);
 
   const buttonTitle = {
     0: 'Select this Payment',

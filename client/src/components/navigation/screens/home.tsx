@@ -8,9 +8,8 @@ import { useAuth } from '@/providers/auth-session';
 
 export default function HomeScreen() {
   const { currentUser } = useAuth();
-  const { data: vaultCard } = useGetVaultCardQuery(currentUser?.id ?? '', {
-    skip: !currentUser,
-  });
+  const { data: vaultCard } = useGetVaultCardQuery(undefined);
+
   const lname = currentUser?.full_name?.split(' ')?.[1] ?? '';
 
   return (

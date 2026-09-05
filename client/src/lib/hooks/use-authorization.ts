@@ -1,5 +1,5 @@
 import { useCallback, useState } from 'react';
-import { useSignInMutation, useSignUpMutation } from '../store/users';
+import { useSignUpMutation } from '../store/users';
 import { authService } from '../firebase/auth';
 import z from 'zod/v3';
 import { signUpSchema } from '../constants/resolvers';
@@ -16,7 +16,6 @@ export function useAuthorization({
   onSuccessSignUp,
   onNext,
 }: UseAuthroization) {
-  const [signIn] = useSignInMutation();
   const [signUp] = useSignUpMutation();
   const [createdId, setId] = useState<string | null>(null);
   const [emailVerified, setVerified] = useState(false);
@@ -25,10 +24,8 @@ export function useAuthorization({
     async (email: string, password: string) => {
       try {
         const user = await authService.signInViaEmail(email, password);
-
-        const res = await signIn(user.uid);
-        if (res.data) {
-          onSuccessSignIn?.(res.data);
+        if (user?.id) {
+          onSuccessSignIn?.(user.id);
         } else {
           toast.error('Incorrect credentials');
         }
@@ -37,7 +34,7 @@ export function useAuthorization({
         toast.error('Something went wrong');
       }
     },
-    [signIn, onSuccessSignIn],
+    [onSuccessSignIn],
   );
 
   const onSignInViaProvider = useCallback(
@@ -47,9 +44,8 @@ export function useAuthorization({
           oauth === 'google' ? 'signInViaGoogle' : 'signInViaApple'
         ]();
         if (user) {
-          const res = await signIn(user.uid);
-          if (res.data) {
-            onSuccessSignIn?.(res.data);
+          if ('id' in user) {
+            onSuccessSignIn?.(user.id);
           } else {
             setId(user.uid);
             setVerified(true);
@@ -64,14 +60,14 @@ export function useAuthorization({
         toast.error('Something went wrong!');
       }
     },
-    [onSuccessSignIn, signIn, onNext],
+    [onSuccessSignIn, onNext],
   );
 
   const initSignUp = useCallback(
     async (email: string, password: string) => {
       try {
         const user = await authService.signUp(email, password);
-        if (user) {
+        if (user?.uid) {
           setId(user.uid);
           onNext?.();
         } else {
@@ -101,24 +97,11 @@ export function useAuthorization({
           image_url: values.selfie ?? '',
           nationality: values.nationality,
           email_verified: emailVerified,
-          phone_verified: false,
-          phone: '',
-          biometric: true,
-          is_verified: false,
           document: values.document ?? '',
           pin: values.pin,
-          personalized_ads: true,
-          two_factor_auth: false,
-          data_sharing: true,
-          language: 'en',
-          transaction: true,
-          promotion: true,
-          security: true,
-          monthly_report: true,
-          newsletter: true,
         });
-        if (res.data) {
-          onSuccessSignUp?.(res.data);
+        if (res && createdId) {
+          onSuccessSignUp?.(createdId ?? '');
         } else throw new Error('Failed to create user');
       } catch (e) {
         logger('[ERROR]: completeSignUp', e);

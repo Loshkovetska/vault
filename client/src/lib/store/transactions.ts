@@ -1,68 +1,37 @@
 import { GetTransactionsRequest, Transaction } from '../types/transaction';
-import { createApi, fakeBaseQuery } from '@reduxjs/toolkit/query/react';
-import { dbService, FilterOpts } from '../firebase/db';
+import { createApi } from '@reduxjs/toolkit/query/react';
+import { FETCH_BASE_QUERY } from './base';
 
 export const transactionApi = createApi({
   reducerPath: 'transactionApi',
-  baseQuery: fakeBaseQuery(),
+  baseQuery: FETCH_BASE_QUERY,
   tagTypes: ['Transaction', 'RecentTransaction'],
   endpoints: build => ({
     getTransactions: build.query<Transaction[], GetTransactionsRequest>({
-      async queryFn({ user_id, search, type }) {
-        const where: FilterOpts['where'] = [
-          { field: 'user_id', operation: '==', value: user_id },
-        ];
-        if (type !== 'all') {
-          where.push({ field: 'type', operation: '==', value: type });
-        }
-
-        const opts = {
-          where,
-          orderBy: { field: 'created_at', direction: 'desc' },
-          search: search.length ? search : undefined,
-        };
-
-        const res = await dbService.get('transactions', opts as FilterOpts);
-
-        return {
-          data: (res.docs ?? []).map(doc => ({
-            id: doc.id,
-            ...doc.data(),
-          })) as Transaction[],
-        };
+      query(args) {
+        return { url: `/transactions`, params: args };
       },
       providesTags: ['Transaction'],
     }),
     getTransaction: build.query<Transaction | null, string>({
-      async queryFn(id) {
-        const res = await dbService.getOne('transactions', id);
-        return { data: { id, ...res.data() } as Transaction };
+      query(id) {
+        return { url: `/transactions/${id}` };
       },
       providesTags: res => [{ type: 'Transaction', id: res?.id }],
     }),
     getRecent: build.query<Transaction[] | null, string>({
-      async queryFn(user_id) {
-        const opts: FilterOpts = {
-          where: [{ field: 'user_id', operation: '==', value: user_id }],
-          orderBy: { field: 'created_at', direction: 'desc' },
-          limit: 5,
-        };
-
-        const res = await dbService.get('transactions', opts);
-
-        return {
-          data: (res.docs ?? []).map(doc => ({
-            id: doc.id,
-            ...doc.data(),
-          })) as Transaction[],
-        };
+      query() {
+        return { url: `/transactions/recent` };
       },
       providesTags: ['RecentTransaction'],
     }),
-    postTransaction: build.mutation<null, Omit<Transaction, 'id'>>({
-      async queryFn(payload) {
-        await dbService.post('transactions', payload);
-        return { data: null };
+    postTransaction: build.mutation<null, Omit<Transaction, 'id' | 'user_id'>>({
+      query(payload) {
+        return {
+          url: `/transactions/create`,
+          method: 'POST',
+          body: JSON.stringify(payload),
+        };
       },
       invalidatesTags: ['Transaction', 'RecentTransaction'],
     }),

@@ -13,7 +13,6 @@ import {
   useGetVaultTransactionsQuery,
 } from '@/lib/store/vault_card';
 import { encryptCardNumber } from '@/lib/utils/string';
-import { useAuth } from '@/providers/auth-session';
 import { LiquidGlassView } from '@callstack/liquid-glass';
 import { Chart } from '@solar-icons/react-native/Bold';
 import { ClockCircle, Magnifier } from '@solar-icons/react-native/Linear';
@@ -51,16 +50,9 @@ const styles = StyleSheet.create(theme => ({
 
 export function CardScreen() {
   const { goToScreen, goToCardDetails } = useNavigate();
-  const { currentUser } = useAuth();
-  const { data: vaultCard } = useGetVaultCardQuery(currentUser?.id ?? '', {
-    skip: !currentUser,
-  });
-  const { data: transactions } = useGetVaultTransactionsQuery(
-    { id: currentUser?.id ?? '', limit: 3 },
-    {
-      skip: !currentUser,
-    },
-  );
+  const { data: vaultCard } = useGetVaultCardQuery(undefined);
+
+  const { data: transactions } = useGetVaultTransactionsQuery(3);
 
   return (
     <>

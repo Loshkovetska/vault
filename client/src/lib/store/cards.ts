@@ -1,52 +1,49 @@
 import { AddCardRequest, RegisteredCard } from '../types/card';
-import { createApi, fakeBaseQuery } from '@reduxjs/toolkit/query/react';
-import { dbService } from '../firebase/db';
+import { createApi } from '@reduxjs/toolkit/query/react';
+import { FETCH_BASE_QUERY } from './base';
 
 export const cardApi = createApi({
   reducerPath: 'cardApi',
-  baseQuery: fakeBaseQuery(),
+  baseQuery: FETCH_BASE_QUERY,
   tagTypes: ['RegisteredCard'],
   endpoints: build => ({
-    getCards: build.query<RegisteredCard[], string>({
-      async queryFn(user_id) {
-        const res = await dbService.get('registered_cards', {
-          where: [{ field: 'user_id', operation: '==', value: user_id }],
-        });
-
-        return {
-          data: res.docs.map(doc => ({
-            id: doc.id,
-            ...doc.data(),
-          })) as RegisteredCard[],
-        };
+    getCards: build.query<RegisteredCard[], undefined>({
+      query() {
+        return { url: '/registered-cards' };
       },
       providesTags: ['RegisteredCard'],
     }),
     getCard: build.query<RegisteredCard, string>({
-      async queryFn(id) {
-        const res = await dbService.getOne('registered_cards', id);
-
-        return { data: { id: res.id, ...res.data() } as RegisteredCard };
+      query(id) {
+        return { url: `/registered-cards/${id}` };
       },
     }),
     addCard: build.mutation<null, AddCardRequest>({
-      async queryFn(payload) {
-        await dbService.post('registered_cards', payload);
-        return { data: null };
+      query(payload) {
+        return {
+          url: `/registered-cards/connect`,
+          method: 'POST',
+          body: JSON.stringify(payload),
+        };
       },
       invalidatesTags: ['RegisteredCard'],
     }),
-    updateCard: build.mutation<null, RegisteredCard>({
-      async queryFn({ id, ...payload }) {
-        await dbService.update('registered_cards', id, payload);
-        return { data: null };
+    updateCard: build.mutation<null, Omit<RegisteredCard, 'user_id'>>({
+      query({ id, ...payload }) {
+        return {
+          url: `/registered-cards/${id}`,
+          method: 'PUT',
+          body: JSON.stringify(payload),
+        };
       },
       invalidatesTags: ['RegisteredCard'],
     }),
     deleteCard: build.mutation<null, string>({
-      async queryFn(id) {
-        await dbService.delete('registered_cards', id);
-        return { data: null };
+      query(id) {
+        return {
+          url: `/registered-cards/${id}`,
+          method: 'DELETE',
+        };
       },
       invalidatesTags: ['RegisteredCard'],
     }),

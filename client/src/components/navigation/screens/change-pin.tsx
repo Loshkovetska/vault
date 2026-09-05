@@ -10,7 +10,6 @@ import {
   useChangePINMutation,
   useGetVaultCardQuery,
 } from '@/lib/store/vault_card';
-import { useAuth } from '@/providers/auth-session';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { startTransition, useCallback } from 'react';
 import { Controller, FormProvider, useForm } from 'react-hook-form';
@@ -28,10 +27,8 @@ const styles = StyleSheet.create({
 
 export function ChangePINScreen() {
   const { goBack } = useNavigate();
-  const { currentUser } = useAuth();
-  const { data: vaultCard } = useGetVaultCardQuery(currentUser?.id ?? '', {
-    skip: !currentUser,
-  });
+  const { data: vaultCard } = useGetVaultCardQuery(undefined);
+
   const [mutate, { isLoading }] = useChangePINMutation();
 
   const form = useForm({

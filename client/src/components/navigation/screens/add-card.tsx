@@ -12,7 +12,6 @@ import {
   useGetCardQuery,
   useUpdateCardMutation,
 } from '@/lib/store/cards';
-import { useAuth } from '@/providers/auth-session';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useCallback, useEffect } from 'react';
 import { Controller, FormProvider, useForm } from 'react-hook-form';
@@ -44,7 +43,6 @@ export function CardEditor({
 }: {
   route: RouteProp<RootParams, 'AddCard'>;
 }) {
-  const { currentUser } = useAuth();
   const cardId = params?.id;
 
   const [addCard, { isLoading: isCreating }] = useAddCardMutation();
@@ -69,14 +67,12 @@ export function CardEditor({
   });
   const onSubmit = useCallback(
     async (values: z.infer<typeof cardSchema>) => {
-      if (!currentUser) return;
       const [month, year] = [
         Number(values.expired_at.slice(0, 2)) - 1,
         Number(values.expired_at.slice(2, 4)),
       ];
 
       const payload: AddCardRequest = {
-        user_id: currentUser?.id,
         card_holder: values.card_holder,
         card_number: values.card_number,
         expired_at: new Date(
@@ -100,7 +96,7 @@ export function CardEditor({
         toast.error('Failed to add card!');
       }
     },
-    [currentUser, cardId, addCard, goBack, updateCard],
+    [cardId, addCard, goBack, updateCard],
   );
 
   useEffect(() => {

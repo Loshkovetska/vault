@@ -15,7 +15,6 @@ import {
   TransactionType,
   Transfer,
 } from '@/lib/types/transaction';
-import { useAuth } from '@/providers/auth-session';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useCallback } from 'react';
 import { Controller, FormProvider, useForm } from 'react-hook-form';
@@ -39,10 +38,8 @@ type Step1Props = {
 };
 
 export function Step1({ merchant }: Step1Props) {
-  const { currentUser } = useAuth();
-  const { data: vaultCard } = useGetVaultCardQuery(currentUser?.id ?? '', {
-    skip: !currentUser,
-  });
+  const { data: vaultCard } = useGetVaultCardQuery(undefined);
+
   const [postTransaction] = usePostTransactionMutation();
   const form = useForm({
     defaultValues: {
@@ -58,8 +55,7 @@ export function Step1({ merchant }: Step1Props) {
 
   const onSubmit = useCallback(
     (values: z.infer<typeof qrCodeSchema>) => {
-      const inputData: Omit<Transaction, 'id'> = {
-        user_id: currentUser?.id ?? '',
+      const inputData: Omit<Transaction, 'id' | 'user_id'> = {
         name: `QR-Code Payment for ${merchant?.merchantName}(${merchant?.categoryName})`,
         type: TransactionType.Transfer,
         metadata: {
@@ -75,7 +71,7 @@ export function Step1({ merchant }: Step1Props) {
         goToActivity();
       });
     },
-    [vaultCard, merchant, currentUser, postTransaction, goToActivity],
+    [vaultCard, merchant, postTransaction, goToActivity],
   );
   return (
     <KeyboardAvoidingView

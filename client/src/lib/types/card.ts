@@ -8,7 +8,7 @@ export type BankAccount = {
   user_id: string;
 };
 
-export type AddBankRequest = Omit<BankAccount, 'id'>;
+export type AddBankRequest = Omit<BankAccount, 'id' | 'user_id'>;
 
 export type RegisteredCard = {
   id: string;
@@ -20,7 +20,7 @@ export type RegisteredCard = {
   balance: number;
 };
 
-export type AddCardRequest = Omit<RegisteredCard, 'id'>;
+export type AddCardRequest = Omit<RegisteredCard, 'id' | 'user_id'>;
 
 export type VaultCardStatus = 'active' | 'block' | 'pause';
 

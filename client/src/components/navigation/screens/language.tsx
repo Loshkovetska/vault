@@ -23,9 +23,9 @@ export function LanguageScreen() {
   const [mutate] = useUpdateLanguageMutation();
   const onSelect = useCallback(
     (v: string) => {
-      mutate([currentUser?.id ?? '', v as UserLanguage]);
+      mutate(v as UserLanguage);
     },
-    [currentUser, mutate],
+    [mutate],
   );
   return (
     <>

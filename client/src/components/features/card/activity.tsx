@@ -19,7 +19,6 @@ import { percentageFormate, priceFormate } from '@/lib/utils/number';
 import { Transaction, TransactionType } from '@/lib/types/transaction';
 import { ActivityItemShort } from '../activity/activity-item-short';
 import { Layout } from '@/components/common/layout';
-import { useAuth } from '@/providers/auth-session';
 import { useGetVaultAnalyticsQuery } from '@/lib/store/vault_card';
 import { EmptyList } from '@/components/common/empty-list';
 import { emptyLists } from '@/lib/constants/empty-lists';
@@ -77,11 +76,7 @@ const styles = StyleSheet.create(() => ({
 export function CardActivity() {
   const [selectedIndex, setSelectedIndex] = useState(-1);
 
-  const { currentUser } = useAuth();
-
-  const { data, isLoading } = useGetVaultAnalyticsQuery(currentUser?.id ?? '', {
-    skip: !currentUser,
-  });
+  const { data, isLoading } = useGetVaultAnalyticsQuery(undefined);
   const totalAmount = useMemo(
     () => data?.metrics?.reduce((prev, cur) => prev + cur.amount, 0) ?? 0,
     [data?.metrics],

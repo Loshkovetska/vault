@@ -45,10 +45,18 @@ export type ToggledPreference =
 
 export type ToggleUserPreference = {
   body: Partial<Record<ToggledPreference, boolean>>;
-  id: string;
 };
 
-export type UserSignUp = Omit<User, 'email'> & {
+export type UserSignUp = Pick<
+  User,
+  | 'full_name'
+  | 'id'
+  | 'bdate'
+  | 'nationality'
+  | 'image_url'
+  | 'gender'
+  | 'email_verified'
+> & {
   document: string;
   pin: string;
 };

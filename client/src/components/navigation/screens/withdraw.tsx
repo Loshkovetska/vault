@@ -16,7 +16,6 @@ import {
   Withdraw,
 } from '@/lib/types/transaction';
 import { accountFormate, generateReference } from '@/lib/utils/string';
-import { useAuth } from '@/providers/auth-session';
 import { useCallback, useState } from 'react';
 import { KeyboardAvoidingView, Platform } from 'react-native';
 
@@ -25,19 +24,14 @@ const initialState = {
 };
 
 export function WithDraw() {
-  const { currentUser } = useAuth();
   const { goToActivity } = useNavigate();
   const [step, setStep] = useState(0);
   const [data, setData] = useState<typeof initialState>(initialState);
 
   const [postTransaction] = usePostTransactionMutation();
-  const { data: banks } = useGetBankAccountsQuery(currentUser?.id ?? '', {
-    skip: !currentUser,
-  });
+  const { data: banks } = useGetBankAccountsQuery(undefined);
 
-  const { data: vaultCard } = useGetVaultCardQuery(currentUser?.id ?? '', {
-    skip: !currentUser,
-  });
+  const { data: vaultCard } = useGetVaultCardQuery(undefined);
 
   const [selectedBank, setSelectedBank] = useState<BankAccount | null>();
 
@@ -64,7 +58,6 @@ export function WithDraw() {
       type: TransactionType.Withdraw,
       name: `Withdraw to ${selectedBank?.name}`,
       amount: Number(data.amount),
-      user_id: currentUser?.id ?? '',
       metadata: {
         method_id: vaultCard?.id,
         destination_account: selectedBank?.account,
@@ -72,7 +65,7 @@ export function WithDraw() {
         fee: 0,
       } as Withdraw,
     } as Omit<Transaction, 'id'>).then(() => onStep(1));
-  }, [selectedBank, vaultCard, data, currentUser, postTransaction, onStep]);
+  }, [selectedBank, vaultCard, data, postTransaction, onStep]);
 
   const titles = {
     0: 'Withdraw',

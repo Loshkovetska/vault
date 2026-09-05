@@ -39,5 +39,6 @@ declare module 'react-native-config' {
     FIREBASE_DB: string;
     FIREBASE_SENDER_ID: string;
     FIREBASE_STORAGE: string;
+    API_URL: string;
   }
 }

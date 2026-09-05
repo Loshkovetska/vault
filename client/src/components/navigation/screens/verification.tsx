@@ -11,7 +11,6 @@ import { Step6 } from '@/components/features/verification/step-6';
 import { useNavigate } from '@/lib/hooks/use-navigate';
 import { useVerifyMutation } from '@/lib/store/users';
 import { UserVerification } from '@/lib/types/user';
-import { useAuth } from '@/providers/auth-session';
 import { useCallback, useState } from 'react';
 
 const initialValues = {
@@ -20,8 +19,6 @@ const initialValues = {
   selfie: null,
 };
 export function VerificationScreen() {
-  const { currentUser } = useAuth();
-
   const [verify] = useVerifyMutation();
   const [step, setStep] = useState(0);
   const [data, setData] = useState<UserVerification>(initialValues);
@@ -48,10 +45,10 @@ export function VerificationScreen() {
   );
 
   const onSubmit = useCallback(() => {
-    verify([currentUser?.id ?? '', data]).then(() => {
+    verify(data).then(() => {
       goHome();
     });
-  }, [currentUser, data, verify, goHome]);
+  }, [data, verify, goHome]);
 
   const titles = {
     0: 'Identity Verification',

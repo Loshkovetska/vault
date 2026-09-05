@@ -15,7 +15,6 @@ import {
   Transfer as TTransfer,
 } from '@/lib/types/transaction';
 import { accountFormate } from '@/lib/utils/string';
-import { useAuth } from '@/providers/auth-session';
 import { useCallback, useState } from 'react';
 import { KeyboardAvoidingView, Platform, View } from 'react-native';
 import { StyleSheet } from 'react-native-unistyles';
@@ -41,13 +40,10 @@ const styles = StyleSheet.create({
 
 export function Transfer() {
   const { goToActivity } = useNavigate();
-  const { currentUser } = useAuth();
 
   const [data, setData] = useState(initialState);
   const [postTransaction] = usePostTransactionMutation();
-  const { data: vaultCard } = useGetVaultCardQuery(currentUser?.id ?? '', {
-    skip: !currentUser,
-  });
+  const { data: vaultCard } = useGetVaultCardQuery(undefined);
 
   const onChange = useCallback(
     (k: keyof typeof initialState) => (v: string) => {
@@ -62,7 +58,6 @@ export function Transfer() {
       type: TransactionType.Transfer,
       created_at: new Date().toISOString(),
       name: `Transfer to ${accountFormate(data.destination_account)}`,
-      user_id: currentUser?.id ?? '',
       amount: Number(data.amount),
       metadata: {
         destination_account: data.destination_account,
@@ -70,7 +65,7 @@ export function Transfer() {
         method_id: vaultCard?.id,
       } as TTransfer,
     } as Omit<Transaction, 'id'>).then(() => goToActivity());
-  }, [data, currentUser, vaultCard, postTransaction, goToActivity]);
+  }, [data, vaultCard, postTransaction, goToActivity]);
 
   const isValid =
     data.destination_account.length > 0 && Number(data.amount) > 0;

@@ -45,11 +45,9 @@ export function ContactInfoScreen() {
 
   const onToggle = useCallback(
     (v: boolean) => {
-      mutate({ body: { two_factor_auth: v }, id: currentUser?.id ?? '' }).then(
-        () => {},
-      );
+      mutate({ body: { two_factor_auth: v } }).then(() => {});
     },
-    [currentUser, mutate],
+    [mutate],
   );
   return (
     <>

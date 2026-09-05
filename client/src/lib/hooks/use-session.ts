@@ -1,4 +1,3 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useCallback, useEffect, useState } from 'react';
 import DeviceInfo from 'react-native-device-info';
 import { useSetSessionMutation } from '../store/sessions';
@@ -7,13 +6,21 @@ import GeoLocation, {
 } from '@react-native-community/geolocation';
 import { STORAGE_KEYS } from '../constants/keys';
 import { toast } from '../helpers/toast';
+import * as Keychain from 'react-native-keychain';
+import { logger } from '../helpers/logger';
 
 export function useSession() {
   const [addSession] = useSetSessionMutation();
   const [session_id, setSessionID] = useState<string | null>();
 
   const getSession = useCallback(() => {
-    AsyncStorage.getItem(STORAGE_KEYS.SESSION_ID).then(setSessionID);
+    Keychain.getGenericPassword({ service: STORAGE_KEYS.SESSION_ID }).then(
+      v => {
+        if (v) {
+          setSessionID(v.password);
+        }
+      },
+    );
   }, []);
 
   const connectSession = useCallback(
@@ -22,15 +29,24 @@ export function useSession() {
       cb: () => void,
       coords?: GeolocationResponse['coords'],
     ) => {
-      Promise.all([DeviceInfo.getDeviceName(), DeviceInfo.getIpAddress()]).then(
-        async ([deviceName, ipAddress]) => {
+      try {
+        Promise.all([
+          DeviceInfo.getDeviceName(),
+          DeviceInfo.getIpAddress(),
+        ]).then(async ([deviceName, ipAddress]) => {
           let address = '';
           if (coords) {
-            const res = await fetch(
-              `https://www.gps-coordinates.net/geoproxy?q=${coords.latitude}+${coords.longitude}&key=9416bf2c8b1d4751be6a9a9e94ea85ca&no_annotations=1&language=en`,
-            ).then(r => r.json());
-            const location = res?.results?.[0].components;
-            address = location ? `${location?.city},${location?.country}` : '';
+            try {
+              const res = await fetch(
+                `https://www.gps-coordinates.net/geoproxy?q=${coords.latitude}+${coords.longitude}&key=9416bf2c8b1d4751be6a9a9e94ea85ca&no_annotations=1&language=en`,
+              ).then(r => r.json());
+              const location = res?.results?.[0].components;
+              address = location
+                ? `${location?.city},${location?.country}`
+                : '';
+            } catch (e) {
+              logger('[ERROR]: Failed to load user location', e);
+            }
           }
 
           addSession({
@@ -41,13 +57,20 @@ export function useSession() {
             last_at: new Date().toISOString(),
           }).then(c => {
             if (c.data) {
-              AsyncStorage.setItem(STORAGE_KEYS.SESSION_ID, c.data);
-              setSessionID(c.data ?? null);
-              cb();
+              Keychain.setGenericPassword('sessionID', c.data, {
+                service: STORAGE_KEYS.SESSION_ID,
+                storage: Keychain.STORAGE_TYPE.AES_GCM,
+                accessible: Keychain.ACCESSIBLE.WHEN_UNLOCKED_THIS_DEVICE_ONLY,
+              }).then(() => {
+                setSessionID(c.data ?? null);
+                cb();
+              });
             }
           });
-        },
-      );
+        });
+      } catch (e) {
+        logger(`[ERROR]: Failed to set session`, e);
+      }
     },
     [addSession],
   );
@@ -65,7 +88,9 @@ export function useSession() {
   );
 
   const clearSession = useCallback((cb: () => void) => {
-    AsyncStorage.removeItem(STORAGE_KEYS.SESSION_ID).then(cb);
+    Keychain.resetGenericPassword({ service: STORAGE_KEYS.SESSION_ID }).then(
+      cb,
+    );
   }, []);
 
   useEffect(() => {

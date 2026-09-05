@@ -34,9 +34,9 @@ export function SecurityScreen() {
 
   const onToggle = useCallback(
     (k: ToggledPreference) => (v: boolean) => {
-      mutation({ body: { [k]: v }, id: currentUser?.id ?? '' });
+      mutation({ body: { [k]: v } });
     },
-    [currentUser, mutation],
+    [mutation],
   );
   return (
     <>
