@@ -16,7 +16,6 @@ export async function userRoutes(
       string,
       any
     >;
-    console.log("payload", payload);
 
     const userPayload = {
       full_name: payload.full_name,
