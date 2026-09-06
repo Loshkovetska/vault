@@ -32,7 +32,7 @@ export async function sessionRoutes(
   });
   fastify.post("/", async (req, res) => {
     const payload = JSON.parse(req.body as string) as Record<string, any>;
-    const result = await dbService.post("sessions", payload);
+    const result: any = await dbService.post("sessions", payload);
 
     return res.status(200).send({
       data: result.id,

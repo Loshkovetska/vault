@@ -71,6 +71,7 @@ export async function transactionRoutes(
     const payload = JSON.parse(req.body as string) as Record<string, any>;
     await dbService.post("transactions", {
       user_id: userId,
+      notification_send: false,
       ...payload,
     });
 

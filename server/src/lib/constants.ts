@@ -5,3 +5,8 @@ export const FIREBASE_PROVIDERS = {
   phone: "phone",
   facebook: "facebook.com",
 };
+
+export const JOBS = {
+  transaction: "TRANSACTION_STATUS",
+  session: "SUSPICIOUS_SESSION",
+};

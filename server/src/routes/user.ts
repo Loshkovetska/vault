@@ -101,6 +101,18 @@ export async function userRoutes(
       data: null,
     });
   });
+  fastify.put("/token", async (req, res) => {
+    const userId = await getUserId(req);
+    if (!userId) {
+      return res.status(401).send({ error: "Unauthorized! Log out" });
+    }
+    const payload = req.body;
+    await dbService.update("users", userId, { fmToken: payload });
+
+    return res.status(200).send({
+      data: null,
+    });
+  });
   fastify.put("/preferences", async (req, res) => {
     const userId = await getUserId(req);
     if (!userId) {

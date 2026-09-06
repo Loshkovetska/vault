@@ -1,21 +1,12 @@
-import * as firebaseAuth from 'firebase/auth';
-import { firebaseInit } from './init';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import { appleAuth } from '@invertase/react-native-apple-authentication';
 import { BASE_URL } from '../store/base';
 import { SignInViaProvider } from '../types/auth';
 
 class AuthServiceClass {
-  auth: firebaseAuth.Auth;
   baseUrl: string;
   constructor() {
-    this.auth = firebaseAuth.initializeAuth(firebaseInit());
-    this.auth.languageCode = 'en';
     this.baseUrl = `${BASE_URL}/auth`;
-  }
-
-  getAuthUser() {
-    return this.auth.currentUser;
   }
   async update(email: string) {
     await fetch(`${this.baseUrl}/update/email`, {
