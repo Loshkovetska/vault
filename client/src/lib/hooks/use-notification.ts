@@ -9,9 +9,7 @@ import {
 import { useEffect } from 'react';
 import notifee, { Event, EventType } from '@notifee/react-native';
 import { NotificationType } from '../types/notification';
-import { BASE_URL } from '../store/base';
-import * as Keychain from 'react-native-keychain';
-import { STORAGE_KEYS } from '../constants/keys';
+import { BASE_URL, injectHeaders } from '../store/base';
 import { logger } from '../helpers/logger';
 import {
   checkNotifications,
@@ -93,10 +91,8 @@ export function useNotification() {
         if (isSimulator) {
           return logger('[INFO]: App boosted on Simulator');
         }
-        const userSession = await Keychain.getGenericPassword({
-          service: STORAGE_KEYS.SESSION_ID,
-        });
-        if (!userSession) return null;
+        const headers = await injectHeaders();
+        if (!headers) return null;
 
         const { status } = await checkNotifications();
         if (status === RESULTS.DENIED || status === RESULTS.LIMITED) {
@@ -119,9 +115,7 @@ export function useNotification() {
 
         await fetch(`${BASE_URL}/users/token`, {
           method: 'PUT',
-          headers: {
-            Cookie: `${userSession.username}=${userSession.password}; SameSite=Lax; HttpOnly; Secure; Domain=vault.com; Path=/; Max-Age=3600`,
-          },
+          headers,
           body: token,
         });
 

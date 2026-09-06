@@ -32,18 +32,14 @@ export const store = configureStore({
 });
 
 export const invalidatesTags = {
-  userApi: userApi.util.invalidateTags(['User']),
-  promoApi: promoApi.util.invalidateTags(['Promo']),
-  transactionApi: transactionApi.util.invalidateTags([
-    'Transaction',
-    'RecentTransaction',
-  ]),
-  bankApi: bankApi.util.invalidateTags(['BankAccount']),
-  sessionApi: sessionApi.util.invalidateTags(['Session']),
-  cardApi: cardApi.util.invalidateTags(['RegisteredCard']),
-  notificationApi: notificationApi.util.invalidateTags(['Notifications']),
-  vaultCardApi: vaultCardApi.util.invalidateTags([
-    'VaultTransactions',
-    'VaultCard',
-  ]),
+  userApi: () => userApi.util.invalidateTags(['User']),
+  promoApi: () => promoApi.util.invalidateTags(['Promo']),
+  transactionApi: () =>
+    transactionApi.util.invalidateTags(['Transaction', 'RecentTransaction']),
+  bankApi: () => bankApi.util.invalidateTags(['BankAccount']),
+  sessionApi: () => sessionApi.util.invalidateTags(['Session']),
+  cardApi: () => cardApi.util.invalidateTags(['RegisteredCard']),
+  notificationApi: () => notificationApi.util.invalidateTags(['Notifications']),
+  vaultCardApi: () =>
+    vaultCardApi.util.invalidateTags(['VaultTransactions', 'VaultCard']),
 };

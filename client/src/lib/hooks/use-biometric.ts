@@ -42,7 +42,7 @@ export function useBiometric(onFail: () => void) {
           }
 
           await AsyncStorage.setItem(
-            'last_biometric',
+            STORAGE_KEYS.BIOMETRIC_ID,
             new Date().toISOString(),
           );
         }
@@ -57,20 +57,23 @@ export function useBiometric(onFail: () => void) {
   }, [rnBiometrics]);
 
   useEffect(() => {
-    AppState.addEventListener('change', state => {
+    const subscribtion = AppState.addEventListener('change', state => {
       if (state === appState.current) {
         return;
       }
       appState.current = state;
       if (state === 'active') {
-        dispatch(invalidatesTags.transactionApi);
-        dispatch(invalidatesTags.userApi);
-        dispatch(invalidatesTags.vaultCardApi);
+        dispatch(invalidatesTags.transactionApi());
+        dispatch(invalidatesTags.userApi());
+        dispatch(invalidatesTags.vaultCardApi());
         checkBiometrics();
-      } else {
+      } else if (state === 'background') {
         hasBeenAsked.current = false;
       }
     });
+    return () => {
+      subscribtion.remove();
+    };
   }, [checkBiometrics, dispatch]);
 
   return null;
