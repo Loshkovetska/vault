@@ -11,12 +11,14 @@ const styles = StyleSheet.create({
 type ActionButtonProps = {
   disabled?: boolean;
   text?: string;
+  testID?: string;
   onPress: () => void;
 };
 export function ActionButton({
   disabled,
   children,
   text,
+  testID,
   onPress,
 }: React.PropsWithChildren<ActionButtonProps>) {
   return (
@@ -29,6 +31,7 @@ export function ActionButton({
       <GlassButton
         typo="label-lg"
         variant="selected"
+        testID={testID}
         style={styles.submit}
         disabled={disabled}
         onPress={onPress}

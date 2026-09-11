@@ -7,7 +7,7 @@ export const promoApi = createApi({
   tagTypes: ['Promo'],
   baseQuery: FETCH_BASE_QUERY,
   endpoints: build => ({
-    getPromos: build.query<Promo[], string>({
+    getPromos: build.query<Promo[], void>({
       query() {
         return { url: '/promos' };
       },

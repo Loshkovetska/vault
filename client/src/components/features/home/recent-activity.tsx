@@ -24,8 +24,8 @@ const styles = StyleSheet.create(() => ({
   empty: { paddingVertical: 8 },
 }));
 
-export function RecentActivity({ session_id }: { session_id: string }) {
-  const { data: activities, isLoading } = useGetRecentQuery(session_id);
+export function RecentActivity() {
+  const { data: activities, isLoading } = useGetRecentQuery();
   const { goToActivity, goToActivityDetails } = useNavigate();
 
   if (isLoading) return <Placeholder type="recent-activity" />;
@@ -43,7 +43,7 @@ export function RecentActivity({ session_id }: { session_id: string }) {
         </TouchableOpacity>
       </View>
       {(activities ?? [])?.length > 0 ? (
-        <View style={styles.list}>
+        <View style={styles.list} testID="recent-activity">
           {activities?.map(activity => (
             <ActivityItemShort
               transaction={activity}

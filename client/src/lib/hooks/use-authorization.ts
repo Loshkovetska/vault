@@ -100,7 +100,7 @@ export function useAuthorization({
           document: values.document ?? '',
           pin: values.pin,
         });
-        if (res && createdId) {
+        if (res?.data && createdId) {
           onSuccessSignUp?.(createdId ?? '');
         } else throw new Error('Failed to create user');
       } catch (e) {

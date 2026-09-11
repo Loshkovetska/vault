@@ -2276,7 +2276,7 @@ PODS:
   - RecaptchaInterop (101.0.0)
   - RNAppleAuthentication (2.5.1):
     - React-Core
-  - RNBootSplash (7.3.2):
+  - RNBootSplash (5.3.0):
     - hermes-engine
     - RCTRequired
     - RCTTypeSafety
@@ -3000,7 +3000,7 @@ SPEC CHECKSUMS:
   ReactNativeDependencies: fa0a54b3f5319ae0e3b9aff32bfee7a424b88e66
   RecaptchaInterop: 11e0b637842dfb48308d242afc3f448062325aba
   RNAppleAuthentication: a89c9804592b38ed4ab11f0aee68d05ba12ad432
-  RNBootSplash: dcf4ccd62104bee81893e3d8c342860a491d3204
+  RNBootSplash: 294a551cef926973a5e72012a91b69e82d5f4fe7
   RNCClipboard: 715fa7c6c8366f17d00f05a439ee7488f390fa5f
   RNDeviceInfo: 4c852998208b60dc192ae3529e5867817719ad1e
   RNFBApp: e767823f39a9b587d3c4867bbe064bd78f4d814b

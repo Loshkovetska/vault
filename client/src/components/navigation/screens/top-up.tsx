@@ -170,6 +170,7 @@ export function TopUpScreen() {
       >
         <Layout>{steps[step as 0]}</Layout>
         <ActionButton
+          testID="submit"
           disabled={!isValid[step as 0]}
           onPress={step === 2 ? onSubmit : () => onStep(1)}
         >

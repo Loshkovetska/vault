@@ -106,7 +106,10 @@ export function WithDraw() {
     },
   };
   const isValid = {
-    1: Number(data.amount) <= (vaultCard?.balance ?? 0) && !!selectedBank,
+    1:
+      Number(data.amount) > 0 &&
+      Number(data.amount) <= (vaultCard?.balance ?? 0) &&
+      !!selectedBank,
     2: true,
   };
 
@@ -125,6 +128,7 @@ export function WithDraw() {
         <Layout>{content[step as 0]}</Layout>
         {currentBtn && (
           <ActionButton
+            testID="submit"
             disabled={!isValid[step as 1]}
             onPress={currentBtn.action}
           >

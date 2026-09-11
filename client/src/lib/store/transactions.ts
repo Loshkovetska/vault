@@ -19,7 +19,7 @@ export const transactionApi = createApi({
       },
       providesTags: res => [{ type: 'Transaction', id: res?.id }],
     }),
-    getRecent: build.query<Transaction[] | null, string>({
+    getRecent: build.query<Transaction[] | null, void>({
       query() {
         return { url: `/transactions/recent` };
       },

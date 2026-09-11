@@ -65,17 +65,16 @@ const items: Array<{
 
 export default function BalanceWidget({ balance }: { balance: number }) {
   const { goToTransaction } = useNavigate();
-
   return (
     <View style={styles.container}>
       <View style={styles.top}>
         <Text typo="display-xs">My Balance</Text>
-        <Text typo="display-lg" weight={600}>
+        <Text typo="display-lg" testID="vault-balance" weight={600}>
           {priceFormate(balance)}
         </Text>
       </View>
       <LiquidGlassView effect="clear" style={styles.blueView}>
-        <View style={styles.blurContainer}>
+        <View style={styles.blurContainer} testID="transaction-types">
           {items.map(item => (
             <TouchableOpacity
               style={styles.btn}

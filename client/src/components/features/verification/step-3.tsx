@@ -95,7 +95,9 @@ export function Step3({ document, onDocumentChange }: Step3Props) {
             <Text typo="text-xs" color="gray-700">
               Supported file types: PNG, JPG, GIF
             </Text>
-            <Button onPress={onUpload}>Upload</Button>
+            <Button testID="upload-document" onPress={onUpload}>
+              Upload
+            </Button>
           </>
         )}
       </View>

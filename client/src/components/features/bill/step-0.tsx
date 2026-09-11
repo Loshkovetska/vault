@@ -71,6 +71,7 @@ export function Step0({ service, onServiceChange }: Step0Props) {
         {Object.entries(services).map(([id, { Icon, title }]) => (
           <GlassButton
             key={id}
+            testID={`service-${id}`}
             wrapperStyle={styles.item}
             style={styles.item_style}
             variant={id === service ? 'selected' : 'default'}

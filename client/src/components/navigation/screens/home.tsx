@@ -11,14 +11,13 @@ export default function HomeScreen() {
   const { data: vaultCard } = useGetVaultCardQuery(undefined);
 
   const lname = currentUser?.full_name?.split(' ')?.[1] ?? '';
-
   return (
     <>
       <Header title={`Hi, ${lname}`} subtitle="Ready to start your today" />
       <Layout>
         <BalanceWidget balance={vaultCard?.balance ?? 0} />
-        <PromoList session_id={currentUser?.id ?? ''} />
-        <RecentActivity session_id={currentUser?.id ?? ''} />
+        <PromoList />
+        <RecentActivity />
       </Layout>
     </>
   );

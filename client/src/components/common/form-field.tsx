@@ -21,7 +21,8 @@ const styles = StyleSheet.create(() => ({
 
 type FormFieldBase = { label: string; error?: string };
 
-export type FormFieldProps = FormFieldBase & InputProps & { style?: ViewStyle };
+export type FormFieldProps = FormFieldBase &
+  InputProps & { style?: ViewStyle; name?: string };
 
 export function FormField({ label, error, style, ...props }: FormFieldProps) {
   return (
@@ -29,7 +30,7 @@ export function FormField({ label, error, style, ...props }: FormFieldProps) {
       <Text typo="text-sm" weight={500}>
         {label}
       </Text>
-      <Input {...props} />
+      <Input testID={props.name} {...props} />
       {error && (
         <View style={styles.error}>
           <InfoCircle size={16} color={themeConfig.colors['error-400']} />

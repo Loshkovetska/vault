@@ -78,7 +78,6 @@ export function useSession() {
   const setSession = useCallback(
     (user_id: string | undefined, cb: () => void) => {
       if (!user_id) return toast.error('Cannot authorize! Try again.');
-
       GeoLocation.getCurrentPosition(
         ({ coords }) => connectSession(user_id, cb, coords),
         () => connectSession(user_id, cb, undefined),

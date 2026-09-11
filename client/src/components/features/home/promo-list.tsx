@@ -21,11 +21,9 @@ const styles = StyleSheet.create(() => ({
   },
 }));
 
-export function PromoList({ session_id }: { session_id: string }) {
+export function PromoList() {
   const { goToPromos, goToPromo } = useNavigate();
-  const { data: promos, isLoading } = useGetPromosQuery(session_id, {
-    skip: !session_id,
-  });
+  const { data: promos, isLoading } = useGetPromosQuery(undefined);
   const renderItem = useCallback(
     ({ item }: ListRenderItemInfo<Promo>) => {
       return (
@@ -53,7 +51,11 @@ export function PromoList({ session_id }: { session_id: string }) {
           </Text>
         </TouchableOpacity>
       </View>
-      <Carousel<Promo> data={promos ?? []} renderItem={renderItem} />
+      <Carousel<Promo>
+        data={promos ?? []}
+        testID="promos"
+        renderItem={renderItem}
+      />
     </View>
   );
 }

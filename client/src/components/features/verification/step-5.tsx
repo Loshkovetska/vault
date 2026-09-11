@@ -84,6 +84,7 @@ export function Step5({ selfie, onSelfieChange, onNext }: Step5Props) {
           </ImageBackground>
         ) : (
           <GlassButton
+            testID="selfie-picker"
             style={styles.btn}
             size="circle_sm"
             variant="selected"

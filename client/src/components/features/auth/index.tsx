@@ -109,6 +109,7 @@ export function Auth({ type }: AuthProps) {
             render={({ field, fieldState }) => (
               <FormField
                 label="Create PIN"
+                name="pin"
                 placeholder="Enter PIN"
                 keyboardType="number-pad"
                 value={field.value}
@@ -161,6 +162,7 @@ export function Auth({ type }: AuthProps) {
         <Layout>{authContent[step as 1]}</Layout>
         {btnTitles[step as 1] && (
           <ActionButton
+            testID="step-submit"
             onPress={onClick[step as 1]}
             disabled={!isValid[step as 1]}
           >

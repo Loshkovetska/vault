@@ -125,8 +125,11 @@ export function Onboarding() {
               </View>
             </View>
             <View style={[styles.bottom, { marginBottom: insets.bottom }]}>
-              <GlassButton onPress={onSkip}>Skip</GlassButton>
+              <GlassButton onPress={onSkip} testID="onboarding-skip">
+                Skip
+              </GlassButton>
               <GlassButton
+                testID="onboarding-next"
                 variant="selected"
                 size="icon_right"
                 onPress={step === 2 ? onSkip : () => onStep(1)}

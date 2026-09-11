@@ -79,6 +79,7 @@ export function Transfer() {
         <Layout>
           <View style={styles.container}>
             <FormField
+              testID="destination_account"
               label="No.Account"
               value={data.destination_account}
               mask={accountMask}
@@ -91,7 +92,7 @@ export function Transfer() {
             />
           </View>
         </Layout>
-        <ActionButton disabled={!isValid} onPress={onSubmit}>
+        <ActionButton disabled={!isValid} testID="submit" onPress={onSubmit}>
           Confirm Payment
         </ActionButton>
       </KeyboardAvoidingView>

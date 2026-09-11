@@ -21,12 +21,16 @@ const SelectContext = createContext<SelectContentProps>({
   onValueChange: () => {},
 });
 
-export function SelectTrigger({ children }: React.PropsWithChildren) {
+export function SelectTrigger({
+  children,
+  testID,
+}: React.PropsWithChildren<{ testID?: string }>) {
   const { open, onOpenChange } = useContext(SelectContext);
 
   const Icon = open ? AltArrowUp : AltArrowDown;
   return (
     <GlassButton
+      testID={testID}
       activeOpacity={0.8}
       wrapperStyle={{ flex: 1 }}
       style={{ justifyContent: 'space-between' }}
@@ -66,7 +70,11 @@ export function SelectItem({
   ];
 
   return (
-    <TouchableOpacity style={style} onPress={() => onValueChange(id)}>
+    <TouchableOpacity
+      testID={`select-option-${id}`}
+      style={style}
+      onPress={() => onValueChange(id)}
+    >
       <Text
         typo="label-md"
         color={isSelected ? 'gray-900' : 'gray-0'}

@@ -30,6 +30,7 @@ export function Step1({
   return (
     <View style={styles.container}>
       <FormField
+        testID="account_reference"
         label={isPhone ? 'No.Phone' : 'No.Account'}
         value={account_reference}
         keyboardType={isPhone ? 'phone-pad' : 'number-pad'}

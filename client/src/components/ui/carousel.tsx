@@ -4,6 +4,7 @@ import { StyleSheet } from 'react-native-unistyles';
 
 type CarouselProps<T> = {
   data: T[];
+  testID?: string;
   renderItem: ListRenderItem<T>;
 };
 
@@ -28,7 +29,7 @@ const styles = StyleSheet.create(theme => ({
   },
 }));
 
-export function Carousel<T>({ data, renderItem }: CarouselProps<T>) {
+export function Carousel<T>({ data, testID, renderItem }: CarouselProps<T>) {
   const [currentSlide, setCurrentSlide] = useState(0);
   const onViewChange = useCallback(
     (info: { viewableItems: ViewToken<T>[]; changed: ViewToken<T>[] }) => {
@@ -39,6 +40,7 @@ export function Carousel<T>({ data, renderItem }: CarouselProps<T>) {
   return (
     <View style={styles.container}>
       <FlatList
+        testID={testID}
         keyExtractor={(_, index) => `carousel-${index}`}
         data={data}
         horizontal

@@ -60,6 +60,7 @@ export function Step0({ type, onAuth, onSubmit }: Step0Props) {
     defaultValues: { email: '', password: '' },
     resolver: zodResolver(signInSchema),
   });
+
   return (
     <ImageBackground
       style={{ flex: 1 }}
@@ -84,6 +85,7 @@ export function Step0({ type, onAuth, onSubmit }: Step0Props) {
             render={({ field, fieldState }) => (
               <FormField
                 label="Email"
+                testID="email-address"
                 keyboardType="email-address"
                 value={field.value}
                 onChangeText={field.onChange}
@@ -97,6 +99,7 @@ export function Step0({ type, onAuth, onSubmit }: Step0Props) {
             render={({ field, fieldState }) => (
               <FormField
                 label="Password"
+                testID="password"
                 value={field.value}
                 secureTextEntry
                 onChangeText={field.onChange}
@@ -109,6 +112,7 @@ export function Step0({ type, onAuth, onSubmit }: Step0Props) {
               size="md"
               color="gray-0"
               variant="white"
+              testID="auth-submit"
               innerStyle={{ ...styles.btn, width: '100%' }}
               onPress={form.handleSubmit(onSubmit)}
             >
@@ -121,6 +125,7 @@ export function Step0({ type, onAuth, onSubmit }: Step0Props) {
                   size="md"
                   color="gray-0"
                   variant="white"
+                  testID="apple-signin"
                   innerStyle={styles.btn}
                   iconLeft={<Apple />}
                   onPress={() => onAuth('apple')}
@@ -131,6 +136,7 @@ export function Step0({ type, onAuth, onSubmit }: Step0Props) {
                 size="md"
                 color="gray-0"
                 variant="white"
+                testID="google-signin"
                 iconLeft={<Google />}
                 innerStyle={styles.btn}
                 onPress={() => onAuth('google')}
@@ -140,7 +146,11 @@ export function Step0({ type, onAuth, onSubmit }: Step0Props) {
           {type === 'sign-in' && (
             <Text typo="text-md" textAlign="center">
               Don't have an account?{' '}
-              <Text color="brand-600" onPress={() => goToScreen('SignUp')}>
+              <Text
+                color="brand-600"
+                testID="sign-up-link"
+                onPress={() => goToScreen('SignUp')}
+              >
                 Sign Up
               </Text>
             </Text>

@@ -46,6 +46,7 @@ export function Step0({ selected, onValueChange }: Step0Props) {
           <GlassButton
             key={id}
             typo="text-xl"
+            testID={`payment-method-[${id}]`}
             variant={selected === id ? 'selected' : 'default'}
             style={styles.item}
             iconLeft={

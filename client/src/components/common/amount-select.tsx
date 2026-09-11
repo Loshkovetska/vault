@@ -43,6 +43,7 @@ export function AmountSelect({
           Input nominal:
         </Text>
         <Input
+          testID="amount"
           value={amount}
           keyboardType="number-pad"
           variant="auto"

@@ -49,13 +49,13 @@ export const signUpSchema = z
 
 export const signInSchema = z.object({
   email: z.string().email('Invalid Email'),
-  password: z.string().min(6, 'Invalid passowrd'),
+  password: z.string().min(6, 'Invalid password'),
 });
 
 export const changePasswordSchema = z
   .object({
-    password: z.string().min(6, 'Invalid passowrd'),
-    confirm_password: z.string().min(6, 'Invalid passowrd'),
+    password: z.string().min(6, 'Invalid password'),
+    confirm_password: z.string().min(6, 'Invalid password'),
   })
   .superRefine((data, ctx) => {
     if (data.password !== data.confirm_password) {

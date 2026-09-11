@@ -46,6 +46,7 @@ export function Step0({ banks, onSelect }: Step0Props) {
           <TouchableOpacity
             onPress={() => onSelect(bank)}
             key={bank.id}
+            testID={`bank-${bank.id}`}
             style={styles.item}
           >
             <LiquidGlassView style={styles.icon}>

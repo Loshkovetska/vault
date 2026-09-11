@@ -82,7 +82,9 @@ export function Step1({
           Select {title}:
         </Text>
         <Select value={method?.id ?? ''} onValueChange={onBankChange}>
-          <SelectTrigger>{selectedName ?? `Select ${title}`}</SelectTrigger>
+          <SelectTrigger testID={`select-${payment_method}`}>
+            {selectedName ?? `Select ${title}`}
+          </SelectTrigger>
           <SelectContent>
             {options.map(bk => (
               <SelectItem key={bk.id} id={bk.id}>

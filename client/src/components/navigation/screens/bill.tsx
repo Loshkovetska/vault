@@ -123,6 +123,7 @@ export function Bill() {
         <Layout>{currentStep?.content}</Layout>
         {currentStep?.btnTitle && (
           <ActionButton
+            testID="submit"
             disabled={!currentStep.isValid}
             onPress={currentStep.onPress}
           >

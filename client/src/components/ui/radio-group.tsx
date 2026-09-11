@@ -46,6 +46,7 @@ type RadioGroupItemProps = {
   id: string;
   disabled?: boolean;
   textProps?: TextProps;
+  testID?: string;
 };
 
 export function RadioGroupItem({
@@ -53,6 +54,7 @@ export function RadioGroupItem({
   disabled,
   children,
   textProps,
+  testID,
 }: React.PropsWithChildren<RadioGroupItemProps>) {
   const { value, onValueChange } = useContext(RadioContext);
   const isSelected = value === id;
@@ -60,6 +62,7 @@ export function RadioGroupItem({
     <TouchableOpacity
       disabled={disabled}
       activeOpacity={0.8}
+      testID={testID}
       style={[styles.item, ...(disabled ? [styles.disabled] : [])]}
       onPress={() => onValueChange(id)}
     >

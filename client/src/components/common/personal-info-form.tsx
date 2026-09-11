@@ -22,6 +22,7 @@ export function PersonalInfoForm<
         render={({ field: { onChange, value }, fieldState }) => (
           <FormField
             label="Full Name"
+            name="full_name"
             placeholder="Enter Full Name"
             error={fieldState.error?.message}
             value={value}
@@ -37,6 +38,7 @@ export function PersonalInfoForm<
           render={({ field: { onChange, value }, fieldState }) => (
             <FormField
               label="Email"
+              name="email"
               placeholder="Enter Email"
               keyboardType="email-address"
               error={fieldState?.error?.message}
@@ -53,6 +55,7 @@ export function PersonalInfoForm<
         render={({ field: { onChange, value }, fieldState }) => (
           <Calendar
             label="Date of Birth"
+            name="bdate"
             placeholder="Press to open calendar"
             initialView="year"
             error={fieldState.error?.message}
@@ -68,8 +71,12 @@ export function PersonalInfoForm<
         render={({ field: { onChange, value }, fieldState }) => (
           <FormRadio label="Gender" error={fieldState?.error?.message}>
             <RadioGroup value={value} onValueChange={onChange}>
-              <RadioGroupItem id="Man">Man</RadioGroupItem>
-              <RadioGroupItem id="Woman">Woman</RadioGroupItem>
+              <RadioGroupItem testID="gender-Man" id="Man">
+                Man
+              </RadioGroupItem>
+              <RadioGroupItem testID="gender-Woman" id="Woman">
+                Woman
+              </RadioGroupItem>
             </RadioGroup>
           </FormRadio>
         )}
@@ -81,6 +88,7 @@ export function PersonalInfoForm<
         render={({ field: { onChange, value }, fieldState }) => (
           <FormField
             label="Nationality"
+            name="nationality"
             placeholder="Enter Nationality"
             error={fieldState.error?.message}
             value={value}
